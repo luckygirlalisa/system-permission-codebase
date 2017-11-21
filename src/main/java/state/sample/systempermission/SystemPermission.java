@@ -6,6 +6,7 @@ public class SystemPermission {
     private boolean granted;
     private boolean isUnixPermissionGranted;
     private String state;
+    private PermissionState permissionState;
     public final static String REQUESTED = "REQUESTED";
     public final static String CLAIMED = "CLAIMED";
     public final static String GRANTED = "GRANTED";
@@ -13,9 +14,14 @@ public class SystemPermission {
     public static final String UNIX_REQUESTED = "UNIX_REQUESTED";
     public static final String UNIX_CLAIMED = "UNIX_CLAIMED";
 
+    public void setPermissionState(PermissionState permissionState) {
+        this.permissionState = permissionState;
+    }
+
     public SystemPermission(SystemProfile profile) {
         this.profile = profile;
-        setState(REQUESTED);
+        setPermissionState(PermissionState.REQUESTED);
+
         granted = false;
         notifyAdminOfPermissionRequest();
     }
@@ -28,10 +34,11 @@ public class SystemPermission {
         if (!getState().equals(REQUESTED) && !getState().equals(UNIX_REQUESTED))
             return;
         willBeHandledBy(admin);
-        if (getState().equals(REQUESTED))
-            setState(CLAIMED);
-        else if (getState().equals(UNIX_REQUESTED))
-            setState(UNIX_CLAIMED);
+        if (getState().equals(REQUESTED)) {
+            setPermissionState(PermissionState.CLAIMED);
+        } else if (getState().equals(UNIX_REQUESTED)) {
+            setPermissionState(PermissionState.UNIX_CLAIMED);
+        }
     }
 
     private void willBeHandledBy(SystemAdmin admin) {
@@ -44,7 +51,7 @@ public class SystemPermission {
         if (!this.admin.equals(admin))
             return;
         granted = false;
-        setState(DENIED);
+        setPermissionState(PermissionState.DENIED);
         notifyUserOfPermissionRequestResult();    }
 
     private void notifyUserOfPermissionRequestResult() {
@@ -60,11 +67,11 @@ public class SystemPermission {
         if (profile.isUnixPermissionRequired() && getState().equals(UNIX_CLAIMED))
             isUnixPermissionGranted = true;
         else if (profile.isUnixPermissionRequired() && !profile.isUnixPermissionGranted()) {
-            setState(UNIX_REQUESTED);
+            setPermissionState(PermissionState.UNIX_REQUESTED);
             notifyUnixAdminsOfPermissionRequest();
             return;
         }
-        setState(GRANTED);
+        setPermissionState(PermissionState.GRANTED);
         granted = true;
         notifyUserOfPermissionRequestResult();
     }
@@ -82,10 +89,6 @@ public class SystemPermission {
     }
 
     public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
+        return permissionState.toString();
     }
 }
