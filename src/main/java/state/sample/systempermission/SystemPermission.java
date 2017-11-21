@@ -80,10 +80,6 @@ public class SystemPermission {
 
     }
 
-    public String state() {
-        return this.getState();
-    }
-
     public boolean isGranted() {
         return this.granted;
     }
