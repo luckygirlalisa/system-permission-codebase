@@ -7,12 +7,12 @@ public class SystemPermission {
     private boolean isUnixPermissionGranted;
     private String state;
     private PermissionState permissionState;
-    public final static String REQUESTED = "REQUESTED";
-    public final static String CLAIMED = "CLAIMED";
-    public final static String GRANTED = "GRANTED";
-    public final static String DENIED = "DENIED";
-    public static final String UNIX_REQUESTED = "UNIX_REQUESTED";
-    public static final String UNIX_CLAIMED = "UNIX_CLAIMED";
+    public final static PermissionState REQUESTED = PermissionState.REQUESTED;
+    public final static PermissionState CLAIMED = PermissionState.CLAIMED;
+    public final static PermissionState GRANTED = PermissionState.GRANTED;
+    public final static PermissionState DENIED = PermissionState.DENIED;
+    public static final PermissionState UNIX_REQUESTED = PermissionState.UNIX_REQUESTED;
+    public static final PermissionState UNIX_CLAIMED = PermissionState.UNIX_CLAIMED;
 
     public void setPermissionState(PermissionState permissionState) {
         this.permissionState = permissionState;
@@ -84,7 +84,7 @@ public class SystemPermission {
         return this.granted;
     }
 
-    public String getState() {
-        return permissionState.toString();
+    public PermissionState getState() {
+        return permissionState;
     }
 }
